@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <!-- visualization library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js">
+    </script>
+    <link rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"/>
+    <title>Analysis</title>
+    <style type="text/css">
+        body {
+            padding-top: 65px;
+        }
+        #depgraph {
+            height: 800px;
+            border-style: solid;
+        }
+    </style>
+
+    <!-- bootstrap -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+                <a class="navbar-brand mb-0 h1" href="/index">Coupling Analyzer</a>
+            </nav>
+        </div>
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Type Name</th>
+                    <th scope="col">Coupling</th>
+                </tr>
+            </thead>
+          <tbody>
+                {% for name, value in coupling %}
+                <tr>
+                  <td>{{ name }}</td>
+                  <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+          </tbody>
+        </table>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Dependency Graph</h5>
+                <p class="card-text">
+                    The following graph shows all the dependencies between the classes
+                    in the package.
+                </p>
+                <p class="card-text">
+                    A dependency is represented by an edge where an edge going
+                    from Class A to Class B means that Class A depends on
+                    Class B. In other words, Class A has a reference to an instance
+                    of Class B, or Class A calls a method in Class B.
+                </p>
+                <p class="card-text">
+                    The graph is interactive. Try dragging the nodes.
+                </p>
+
+                <div id="depgraph"></div>
+                <script type="text/javascript">
+                    var nodes = new vis.DataSet([
+                        {%- for type_name, type_id in nodes.iteritems() %}
+                        {id: {{ type_id }}, label: '{{ type_name }}'},
+                        {% endfor %}
+                    ]);
+
+                    var edges = new vis.DataSet([
+                        {% for type_id, dep_ids in edges.iteritems() %}
+                            {% for dep_id in dep_ids %}
+                                {from: {{ type_id }}, to: {{ dep_id }}, arrows:"to"},
+                            {% endfor %}
+                        {% endfor %}
+                    ]);
+                    var container = document.getElementById('depgraph');
+
+                    var data = {
+                        nodes: nodes,
+                        edges: edges
+                    };
+
+                    // graph options
+                    var options = {
+                        edges: {
+                            length:100,
+                            smooth:false
+                        },
+                        physics: {
+                            enabled:false
+                        }
+                    };
+
+                    var network = new vis.Network(container, data, options);
+                </script>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

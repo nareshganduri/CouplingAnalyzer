@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <title>Coupling Analyzer</title>
+</head>
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Coupling Analyzer</h1>
+            <hr/>
+            <p>To get started, upload a .zip file containing all your Java code</p>
+            <form action="upload" method="post" enctype=multipart/form-data>
+                <div class="form-group">
+                    <input name="zipfile"
+                           class="form-control-file"
+                           type="file" required
+                           accept=".zip"/>
+                </div>
+                <button type="submit" class="btn btn-lg btn-primary">
+                    Analyze
+                </button>
+            </form>
+        </div>
+        {% if error %}
+        <div class="alert alert-danger">
+            <strong>Error:</strong> {{ error }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
